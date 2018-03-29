@@ -1,139 +1,169 @@
-const questionAndAnswer = [{
-	question: 'Who won the 2006 Masters Tournament?',
-	options: ['Phil Mickelson', 'Tiger Woods', 'Arnold Palmer', 'Luke Donald'],
-	answer: 'Phil Mickelson'
-}, {
-	question: 'Which is not a Major?',
-	options: ['Masters', 'US Open', 'The Open Championship', 'Honda Classic'],
-	answer: 'Honda Classic'
-}, {
-	question: 'Who has won the most majors?',
-	options: ['Arnold Palmer', 'Tiger Woods', 'Jack Nicklaus', 'Phil Mickelson'],
-	answer: 'Jack Nicklaus'
-}, {
-	question: 'How many majors did Jack Nicklaus win?',
-	options: ['12', '9', '19', '18'],
-	answer: '18'
-}
-];
+'use strict';
 
-//move nothingChecked inside createQuestionBlock 
-
-let correctAnswers = 0;
-let i = 0;
-
-function createQuestionBlock(){
-const questionBlock = `
-	<div id='q_and_a_block'>
-		<h3>${questionAndAnswer[i].question}</h3>
-		<form class="form">
-			<label class='answer'>
-				<input type="radio" name='answerOption' value='${questionAndAnswer[i].options[0]}'>
-				<span>${questionAndAnswer[i].options[0]}</span>
-			</label>
-
-			<br>
-
-			<label class='answer'>
-				<input type="radio" name='answerOption' value='${questionAndAnswer[i].options[1]}'>
-				<span>${questionAndAnswer[i].options[1]}</span>
-			</label>
-
-			<br>
-
-			<label class='answer'>
-				<input type="radio" name='answerOption' value='${questionAndAnswer[i].options[2]}'>
-				<span>${questionAndAnswer[i].options[2]}</span>
-			</label>
-
-			<br>
-
-			<label class='answer'>
-				<input type="radio" name='answerOption' value='${questionAndAnswer[i].options[3]}'>
-				<span>${questionAndAnswer[i].options[3]}</span>
-			</label>
-		</form>
-		<button type="submit" class="tab answer-button" id="js-answer-submit">Submit Answer</button>
-		<button type="submit" class="tab next-button" id="js-next-question">Next Question</button>
-	</div>
-	`
-
-
-		$('.mainBlock').append(questionBlock);
-		let nothingChecked = !$('input[name=answerOption]:radio:checked').val()
-		$('#js-answer-submit').one("click", checkAnswer);
-		$('#js-next-question').one("click", function(){
-		$('#q_and_a_block').remove();
-		$('.rightOrWrong').remove();
-			if(i < questionAndAnswer.length){
-				createQuestionBlock();
-				createQuestionNumberBlock();
-			}else{
-				createTallyBlock();
-				$('#js-restart').click(function(){
-					location.reload();
-				})
-			}
-		})
-}
-
-function createQuestionNumberBlock(){
-	const questionNumberBlock = `
-		<div class='change-question-number'>
-			<p class='question-number-text'>Question</p>
-			<br>
-			<p class='question-number-number'>${i + 1}</p>
-		</div>
-	`
-	$('#q_and_a_block').prepend(questionNumberBlock);
-}
-
-function createTallyBlock (){
-	const tallyBlock = `
-	<div>
-		<h3 class='end-quiz congrat-text'>Congratulations!!!</h3> 
-		<br> 
-		<p class='end-quiz num-right'>You got ${correctAnswers} out of ${i} correct.</p>
-	</div>
-	<button class='tab end-quiz-button' id='js-restart'>Restart Quiz</button>
-	`
-	$('.mainBlock').append(tallyBlock);
-}
-//working...hides the intro text and adds the first question.
-$('#js-intro-submit').click(function(){
-	let nothingChecked = !$('input[name=answerOption]:radio:checked').val()
-	$('#js-intro').addClass('hidden')
-	createQuestionBlock();
-	createQuestionNumberBlock();
-})
-
-// $('#js-next-question').click(function(){
-// 	$('#q_and_a_block').remove();
-// 	createQuestionBlock();
-// })
-
-function checkAnswer(){
-	
-	let userAnswer = $('input[name=answerOption]:radio:checked').val()
-	const correctBlock = 
-	`<div class='rightOrWrong'>
-		<h4 class="rightOrWrong-text">Correct!</h4>
-	</div>`
-
-	const incorrectBlock = `
-	<div class='rightOrWrong'>
-		<h4 class="rightOrWrong-text">
-		Incorrect! <br> The correct answer was ${questionAndAnswer[i].answer}
-		</h4>
-	</div>
-	`
-	
-	if(userAnswer === questionAndAnswer[i].answer){
-		$('.correct_or_not').append(correctBlock);
-		correctAnswers++;
-	}else{
-		$('.correct_or_not').append(incorrectBlock);
-	}
-	i++;
-
-}
+(function() {
+      var questions = [{
+        question: "Where do you normally putt?",
+        choices: ['Green', 'Fairway', 'Teebox', 'Rough', 'Sand'],
+        correctAnswer: 0
+      }, {
+        question: "Who won the 2006 Masters Tournament?",
+        choices: ['Luke Donald', 'Tiger Woods', 'Jordan Speith', 'Jack Nicklaus', 'Phil Mickelson'],
+        correctAnswer: 4
+      }, {
+        question: "Who has won the most majors?",
+        choices: ['Tiger Woods', 'Jack Nicklaus', 'Sam Sneed', 'Walter Hagen', 'Tony Finau'],
+        correctAnswer: 1
+      }, {
+        question: "What company pulled out of making golf clubs in 2016?",
+        choices: ['Mizuno', 'Titleist', 'Nike', 'Pinnacle', 'Callaway'],
+        correctAnswer: 2
+      }, {
+        question: "What is considered an albatross in golf?",
+        choices: ['Bogey', 'Double Eagle', 'Birdie', 'Double Bogey', 'Par'],
+        correctAnswer: 1
+      }];
+      
+      var questionCounter = 0; //Tracks question number
+      var selections = []; //Array containing user choices
+      var quiz = $('#quiz'); //Quiz div object
+      
+      // Display initial question
+      displayNext();
+      
+      // Click handler for the 'next' button
+      $('#next').on('click', function (e) {
+        e.preventDefault();
+        
+        // Suspend click listener during fade animation
+        if(quiz.is(':animated')) {        
+          return false;
+        }
+        choose();
+        
+        // If no user selection, progress is stopped
+        if (isNaN(selections[questionCounter])) {
+          alert('Please make a selection!');
+        } else {
+          questionCounter++;
+          displayNext();
+        }
+      });
+      
+      // Click handler for the 'prev' button
+      $('#prev').on('click', function (e) {
+        e.preventDefault();
+        
+        if(quiz.is(':animated')) {
+          return false;
+        }
+        choose();
+        questionCounter--;
+        displayNext();
+      });
+      
+      // Click handler for the 'Start Over' button
+      $('#start').on('click', function (e) {
+        e.preventDefault();
+        
+        if(quiz.is(':animated')) {
+          return false;
+        }
+        questionCounter = 0;
+        selections = [];
+        displayNext();
+        $('#start').hide();
+      });
+      
+      // Animates buttons on hover
+      $('.button').on('mouseenter', function () {
+        $(this).addClass('active');
+      });
+      $('.button').on('mouseleave', function () {
+        $(this).removeClass('active');
+      });
+      
+      // Creates and returns the div that contains the questions and 
+      // the answer selections
+      function createQuestionElement(index) {
+        var qElement = $('<div>', {
+          id: 'question'
+        });
+        
+        var header = $('<h2>Question ' + (index + 1) + ':</h2>');
+        qElement.append(header);
+        
+        var question = $('<p>').append(questions[index].question);
+        qElement.append(question);
+        
+        var radioButtons = createRadios(index);
+        qElement.append(radioButtons);
+        
+        return qElement;
+      }
+      
+      // Creates a list of the answer choices as radio inputs
+      function createRadios(index) {
+        var radioList = $('<ul>');
+        var item;
+        var input = '';
+        for (var i = 0; i < questions[index].choices.length; i++) {
+          item = $('<li>');
+          input = '<input type="radio" name="answer" value=' + i + ' />';
+          input += questions[index].choices[i];
+          item.append(input);
+          radioList.append(item);
+        }
+        return radioList;
+      }
+      
+      // Reads the user selection and pushes the value to an array
+      function choose() {
+        selections[questionCounter] = +$('input[name="answer"]:checked').val();
+      }
+      
+      // Displays next requested element
+      function displayNext() {
+        quiz.fadeOut(function() {
+          $('#question').remove();
+          
+          if(questionCounter < questions.length){
+            var nextQuestion = createQuestionElement(questionCounter);
+            quiz.append(nextQuestion).fadeIn();
+            if (!(isNaN(selections[questionCounter]))) {
+              $('input[value='+selections[questionCounter]+']').prop('checked', true);
+            }
+            
+            // Controls display of 'prev' button
+            if(questionCounter === 1){
+              $('#prev').show();
+            } else if(questionCounter === 0){
+              
+              $('#prev').hide();
+              $('#next').show();
+            }
+          }else {
+            var scoreElem = displayScore();
+            quiz.append(scoreElem).fadeIn();
+            $('#next').hide();
+            $('#prev').hide();
+            $('#start').show();
+          }
+        });
+      }
+      
+      // Computes score and returns a paragraph element to be displayed
+      function displayScore() {
+        var score = $('<p>',{id: 'question'});
+        
+        var numCorrect = 0;
+        for (var i = 0; i < selections.length; i++) {
+          if (selections[i] === questions[i].correctAnswer) {
+            numCorrect++;
+          }
+        }
+        
+        score.append('You got ' + numCorrect + ' questions out of ' +
+                     questions.length + ' right!');
+        return score;
+      }
+    })();
