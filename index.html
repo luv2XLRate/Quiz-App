@@ -1,30 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="viewport" content="width=device-width, maximum-scale=1, minimum-scale=1">
-	<link rel="stylesheet" href="golfersquiz.css">
-	<title>Quiz</title>
+      <meta name="viewport" content="width=device-width, maximum-scale=1, minimum-scale=1">
+      <title>Dynamic Quiz Project</title>
+      <link type='text/css' rel='stylesheet' href='golfersquiz.css'/>
+      <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open Sans"/>
 </head>
-
-<body class='body'>
-<div class="mainBlock">
-	<header class='header' role="banner">
-		<h1 class='quizTitle'>Golfer's Quiz</h1>
-	</header>
-	<div id='js-intro'>
-		<p class="intro-sentence">How many can you guess correctly? Good luck!</p>
-		<button type='submit' class='tab intro-submit' id='js-intro-submit'>Begin</button>
-	</div>
-
-</div>
-
-<div class="correct_or_not" id="js-correct-or-not">
-	
-</div>
-<script
-	src="https://code.jquery.com/jquery-3.2.1.min.js"
-    integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-    crossorigin="anonymous"></script>
+      <body>
+            <div id='container'>
+                  <div id='title'>
+                        <h1>Golfers Quiz</h1>
+                  </div>
+                           <br/>
+                          <div id='quiz'></div>
+                      <div class='button' id='next'><a href='#'>Next</a></div>
+                      <div class='button' id='prev'><a href='#'>Prev</a></div>
+                      <div class='button' id='start'> <a href='#'>Start Over</a></div>
+                      <!-- <button class='' id='next'>Next</a></button>
+                      <button class='' id='prev'>Prev</a></button>
+                      <button class='' id='start'> Start Over</a></button> -->
+                </div>
+      
+                  <script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js'></script>
+                  <script type="text/javascript" src='questions.json'></script>
+                  <script type='text/javascript' src='jsquiz.js'></script>
+            </body>
+     <script src="https://code.jquery.com/jquery-3.2.1.min.js"
+      integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+      crossorigin="anonymous">
+</script>
 <script src="golfersquiz.js"></script>
 
 </body>
